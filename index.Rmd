@@ -1,6 +1,6 @@
 ---
 title: "PS270 Final Project"
-author: "Your Name Here"
+author: "Mallory Bertone"
 description: "My final project"
 output:
   distill::distill_article:
@@ -11,4 +11,4 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+I am interested in exploring data related to Supreme Court decisions about voting. Specifically, I want to look at if the Supreme Court has overall done more to expand or to limit voting abilities of Americans. I also want to see what the biggest factors and provisions that influenced the case are. I'd want to limit my research to cases passed after the Voting Rights Act of 1965. 
