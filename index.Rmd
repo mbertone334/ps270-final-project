@@ -7,8 +7,28 @@ output:
     self_contained: false
 ---
 
+```{r setup, include=FALSE}
+library(tidyverse)
+```
 
 
 ## Project thoughts
 
 I am interested in exploring data related to Supreme Court decisions about voting. Specifically, I want to look at if the Supreme Court has overall done more to expand or to limit voting abilities of Americans. I also want to see what the biggest factors and provisions that influenced the case are. I'd want to limit my research to cases passed after the Voting Rights Act of 1965. 
+
+*Research Question*: Has the Supreme Court expanded or limited access to voting since the passing of the Voting Rights Act of 1965? 
+
+My hypothesis is that overall the Supreme Court has decreased voting access since the Court tends to be moderate or conservative in many of their rulings. Since 1969, 14 of the 18 justices appointed have been selected by Republican presidents, making them likely to follow the ideals of their appointers. Currently, the Supreme Court has a 6-3 divide, with the majority leaning conservative. Conservatives are, on average, more likely to be against the expansion of voting access in many cases. 
+
+The explanatory variable is the time, or the court era, of that specific court. Since 1965, the court eras include the Warren court, the Burger court, the Rehnquist court, and the Roberts court, which is the era the Supreme Court is currently in. From this, the outcome variable will be the outcome of the case, or whether or not voting access was restricted or expanded. This will be measured by the `decisionDirection` variable, which notes whether the court voted conservatively, liberally, or their decision was unspecifiable. 
+
+If the courts decisions trend conservatively, the hypothesis will be supported, as voting rights will have been restricted. If the court trends liberally or the decision was unspecifiable, the hypothesis will not be supported, as the court will have either expanded voting rights or kept them at the same level. 
+
+## Data
+
+
+```{r}
+cases <- read_csv("SCDB_2025_01_caseCentered_Vote.csv")
+head(cases)
+```
+

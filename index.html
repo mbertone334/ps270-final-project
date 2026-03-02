@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","SCDB_2025_01_caseCentered_Vote.csv"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1546,7 +1546,34 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-article">
 <h2 id="project-thoughts">Project thoughts</h2>
 <p>I am interested in exploring data related to Supreme Court decisions about voting. Specifically, I want to look at if the Supreme Court has overall done more to expand or to limit voting abilities of Americans. I also want to see what the biggest factors and provisions that influenced the case are. I’d want to limit my research to cases passed after the Voting Rights Act of 1965.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p><em>Research Question</em>: Has the Supreme Court expanded or limited access to voting since the passing of the Voting Rights Act of 1965?</p>
+<p>My hypothesis is that overall the Supreme Court has decreased voting access since the Court tends to be moderate or conservative in many of their rulings. Since 1969, 14 of the 18 justices appointed have been selected by Republican presidents, making them likely to follow the ideals of their appointers. Currently, the Supreme Court has a 6-3 divide, with the majority leaning conservative. Conservatives are, on average, more likely to be against the expansion of voting access in many cases.</p>
+<p>The explanatory variable is the time, or the court era, of that specific court. Since 1965, the court eras include the Warren court, the Burger court, the Rehnquist court, and the Roberts court, which is the era the Supreme Court is currently in. From this, the outcome variable will be the outcome of the case, or whether or not voting access was restricted or expanded. This will be measured by the <code>decisionDirection</code> variable, which notes whether the court voted conservatively, liberally, or their decision was unspecifiable.</p>
+<p>If the courts decisions trend conservatively, the hypothesis will be supported, as voting rights will have been restricted. If the court trends liberally or the decision was unspecifiable, the hypothesis will not be supported, as the court will have either expanded voting rights or kept them at the same level.</p>
+<h2 id="data">Data</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>cases</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"SCDB_2025_01_caseCentered_Vote.csv"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>cases</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 6 × 53
+  caseId docketId caseIssuesId voteId dateDecision decisionType usCite
+  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt; 
+1 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
+2 1946-… 1946-00… 1946-002-01… 1946-… 11/18/1946              1 329 U…
+3 1946-… 1946-00… 1946-002-02… 1946-… 11/18/1946              1 329 U…
+4 1946-… 1946-00… 1946-002-03… 1946-… 11/18/1946              1 329 U…
+5 1946-… 1946-00… 1946-002-04… 1946-… 11/18/1946              1 329 U…
+6 1946-… 1946-00… 1946-002-05… 1946-… 11/18/1946              1 329 U…
+# ℹ 46 more variables: sctCite &lt;chr&gt;, ledCite &lt;chr&gt;, lexisCite &lt;chr&gt;,
+#   term &lt;dbl&gt;, naturalCourt &lt;dbl&gt;, chief &lt;chr&gt;, docket &lt;chr&gt;,
+#   caseName &lt;chr&gt;, dateArgument &lt;chr&gt;, dateRearg &lt;chr&gt;,
+#   petitioner &lt;dbl&gt;, petitionerState &lt;dbl&gt;, respondent &lt;dbl&gt;,
+#   respondentState &lt;dbl&gt;, jurisdiction &lt;dbl&gt;, adminAction &lt;dbl&gt;,
+#   adminActionState &lt;dbl&gt;, threeJudgeFdc &lt;dbl&gt;, caseOrigin &lt;dbl&gt;,
+#   caseOriginState &lt;dbl&gt;, caseSource &lt;dbl&gt;, caseSourceState &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
