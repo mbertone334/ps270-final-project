@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","SCDB_2025_01_caseCentered_Vote.csv"]}
+  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-4-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","SCDB_2025_01_caseCentered_Vote.csv"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1573,7 +1573,52 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 #   adminActionState &lt;dbl&gt;, threeJudgeFdc &lt;dbl&gt;, caseOrigin &lt;dbl&gt;,
 #   caseOriginState &lt;dbl&gt;, caseSource &lt;dbl&gt;, caseSourceState &lt;dbl&gt;, …</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="data-cleaning">Data Cleaning</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>cases</span> <span class='op'>&lt;-</span> <span class='va'>cases</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>year <span class='op'>=</span> <span class='va'>term</span><span class='op'>)</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>year</span>, <span class='va'>caseId</span>, <span class='va'>dateDecision</span>, <span class='va'>decisionType</span>, <span class='va'>naturalCourt</span>, <span class='va'>chief</span>, <span class='va'>docket</span>, <span class='va'>caseName</span>, <span class='va'>caseDisposition</span>, <span class='va'>caseDispositionUnusual</span>, <span class='va'>partyWinning</span>, <span class='va'>voteUnclear</span>, <span class='va'>issue</span>, <span class='va'>issueArea</span>, <span class='va'>decisionType</span>, <span class='va'>decisionDirection</span>, <span class='va'>authorityDecision1</span>, <span class='va'>authorityDecision2</span>, <span class='va'>lawType</span>, <span class='va'>lawSupp</span>, <span class='va'>splitVote</span>, <span class='va'>majVotes</span>, <span class='va'>minVotes</span><span class='op'>)</span></span>
+<span><span class='va'>voting_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20010</span>, <span class='fl'>20020</span>, <span class='fl'>20090</span><span class='op'>)</span></span>
+<span><span class='va'>cases</span> <span class='op'>&lt;-</span> <span class='va'>cases</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>&gt;</span> <span class='fl'>1965</span>, <span class='va'>issue</span> <span class='op'>==</span> <span class='st'>"20010"</span> <span class='op'>|</span> <span class='va'>issue</span> <span class='op'>==</span> <span class='st'>"20020"</span> <span class='op'>|</span> <span class='va'>issue</span> <span class='op'>==</span> <span class='st'>"20090"</span><span class='op'>)</span> </span>
+<span><span class='va'>cases</span> <span class='op'>&lt;-</span> <span class='va'>cases</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/distinct.html'>distinct</a></span><span class='op'>(</span><span class='va'>caseName</span>, .keep_all <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>cases</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 6 × 22
+   year caseId   dateDecision decisionType naturalCourt chief  docket
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; 
+1  1966 1966-022 12/12/1966              1         1409 Warren 800   
+2  1966 1966-034 1/9/1967                1         1409 Warren 136   
+3  1966 1966-055 2/20/1967               2         1409 Warren 235   
+4  1966 1966-098 5/22/1967               1         1409 Warren 430   
+5  1966 1966-099 5/22/1967               1         1409 Warren 724   
+6  1967 1967-029 12/4/1967               2         1410 Warren 568   
+# ℹ 15 more variables: caseName &lt;chr&gt;, caseDisposition &lt;dbl&gt;,
+#   caseDispositionUnusual &lt;dbl&gt;, partyWinning &lt;dbl&gt;,
+#   voteUnclear &lt;dbl&gt;, issue &lt;dbl&gt;, issueArea &lt;dbl&gt;,
+#   decisionDirection &lt;dbl&gt;, authorityDecision1 &lt;dbl&gt;,
+#   authorityDecision2 &lt;dbl&gt;, lawType &lt;dbl&gt;, lawSupp &lt;dbl&gt;,
+#   splitVote &lt;dbl&gt;, majVotes &lt;dbl&gt;, minVotes &lt;dbl&gt;</code></pre>
+</div>
+<h2 id="stacked-bar-chart">Stacked Bar Chart</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>cases</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>ideology <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>decisionDirection</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='st'>"Conservative"</span>, <span class='st'>"Liberal"</span><span class='op'>)</span>, chief <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>chief</span>, levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Warren"</span>, <span class='st'>"Burger"</span>, <span class='st'>"Rehnquist"</span>, <span class='st'>"Roberts"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>chief</span>, <span class='va'>decisionDirection</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>pivot_wider</a></span><span class='op'>(</span>names_from <span class='op'>=</span> <span class='va'>decisionDirection</span>, values_from <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>total <span class='op'>=</span> <span class='va'>`1`</span> <span class='op'>+</span> <span class='va'>`2`</span>, percent_liberal <span class='op'>=</span> <span class='va'>`1`</span> <span class='op'>/</span> <span class='va'>total</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>chief</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, fill <span class='op'>=</span> <span class='st'>"red3"</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>percent_liberal</span><span class='op'>)</span>, fill <span class='op'>=</span> <span class='st'>"royalblue"</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org/reference/percent_format.html'>percent</a></span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Supreme Court Voting Directions Based on Court Era"</span>, x <span class='op'>=</span> <span class='st'>"Court Era"</span>, y <span class='op'>=</span> <span class='st'>"Percentage"</span>, subtitle <span class='op'>=</span> <span class='st'>"Blue = Voting Rights Expanded, Red = Voting Rights Restricted"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
+</div>
+<p>This bar chart shows how the Supreme Court expanded or restricted voting rights in each court era since the passing of the Civil Rights Act of 1965. Red sections in each bar show the percentage of cases that restricted voting rights in each era, while blue sections show the percentage of cases that expanded voting rights. From this we can see that the Warren and Burger courts restricted voting rights more, while the Rehnquist and Roberts courts do not have a large difference in the expansion or restriction decisions. This graph does not take into account how many cases dealt with voting in each era, so we cannot yet assume that voting rights were restricted more than they were expanded.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

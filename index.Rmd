@@ -32,3 +32,31 @@ cases <- read_csv("SCDB_2025_01_caseCentered_Vote.csv")
 head(cases)
 ```
 
+## Data Cleaning 
+
+```{r}
+cases <- cases |> mutate(year = term) |> select(year, caseId, dateDecision, decisionType, naturalCourt, chief, docket, caseName, caseDisposition, caseDispositionUnusual, partyWinning, voteUnclear, issue, issueArea, decisionType, decisionDirection, authorityDecision1, authorityDecision2, lawType, lawSupp, splitVote, majVotes, minVotes)
+voting_list <- c(20010, 20020, 20090)
+cases <- cases |> filter(year > 1965, issue == "20010" | issue == "20020" | issue == "20090") 
+cases <- cases |> distinct(caseName, .keep_all = TRUE)
+```
+
+```{r}
+head(cases)
+```
+
+## Stacked Bar Chart
+
+```{r}
+cases |> mutate(ideology = if_else(decisionDirection == 1, "Conservative", "Liberal"), chief = factor(chief, levels = c("Warren", "Burger", "Rehnquist", "Roberts"))) |> 
+  group_by(chief, decisionDirection) |> 
+  summarise(n = n()) |> 
+  pivot_wider(names_from = decisionDirection, values_from = n) |> mutate(total = `1` + `2`, percent_liberal = `1` / total) |> 
+  ggplot(mapping = aes(x = chief)) + 
+  geom_col(aes(y = 1), fill = "red3") + 
+  geom_col(aes(y = percent_liberal), fill = "royalblue") + 
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Supreme Court Voting Directions Based on Court Era", x = "Court Era", y = "Percentage", subtitle = "Blue = Voting Rights Expanded, Red = Voting Rights Restricted")
+```
+
+This bar chart shows how the Supreme Court expanded or restricted voting rights in each court era since the passing of the Civil Rights Act of 1965. Red sections in each bar show the percentage of cases that restricted voting rights in each era, while blue sections show the percentage of cases that expanded voting rights. From this we can see that the Warren and Burger courts restricted voting rights more, while the Rehnquist and Roberts courts do not have a large difference in the expansion or restriction decisions. This graph does not take into account how many cases dealt with voting in each era, so we cannot yet assume that voting rights were restricted more than they were expanded. 
