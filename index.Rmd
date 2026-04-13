@@ -9,6 +9,8 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(broom)
+library(knitr)
 ```
 
 
@@ -27,18 +29,20 @@ If the courts decisions trend conservatively, the hypothesis will be supported, 
 ## Data
 
 
-```{r}
+```{r load data}
 cases <- read_csv("SCDB_2025_01_caseCentered_Vote.csv")
 head(cases)
 ```
 
 ## Data Cleaning 
 
-```{r}
+```{r cleaning}
 cases <- cases |> mutate(year = term) |> select(year, caseId, dateDecision, decisionType, naturalCourt, chief, docket, caseName, caseDisposition, caseDispositionUnusual, partyWinning, voteUnclear, issue, issueArea, decisionType, decisionDirection, authorityDecision1, authorityDecision2, lawType, lawSupp, splitVote, majVotes, minVotes)
 voting_list <- c(20010, 20020, 20090)
 cases <- cases |> filter(year > 1965, issue == "20010" | issue == "20020" | issue == "20090") 
 cases <- cases |> distinct(caseName, .keep_all = TRUE)
+cases <- cases |> drop_na(decisionDirection) |> filter(decisionDirection == 1 | decisionDirection == 2) |> mutate(ideology = if_else(decisionDirection == 1, "Conservative", "Liberal"), chief = factor(chief, levels = c("Warren", "Burger", "Rehnquist", "Roberts")))
+cases <- cases |> mutate(ideologyBinary = if_else(decisionDirection == 1, 1, 0))
 ```
 
 ```{r}
@@ -48,15 +52,54 @@ head(cases)
 ## Stacked Bar Chart
 
 ```{r}
-cases |> mutate(ideology = if_else(decisionDirection == 1, "Conservative", "Liberal"), chief = factor(chief, levels = c("Warren", "Burger", "Rehnquist", "Roberts"))) |> 
-  group_by(chief, decisionDirection) |> 
+cases |> group_by(decisionDirection) |> summarise(n = n())
+```
+
+
+```{r visualization}
+cases |> group_by(chief, decisionDirection) |> 
   summarise(n = n()) |> 
-  pivot_wider(names_from = decisionDirection, values_from = n) |> mutate(total = `1` + `2`, percent_liberal = `1` / total) |> 
+  pivot_wider(names_from = decisionDirection, values_from = n) |> mutate(total = `1` + `2`, percent_con = `1` / total) |> 
   ggplot(mapping = aes(x = chief)) + 
-  geom_col(aes(y = 1), fill = "red3") + 
-  geom_col(aes(y = percent_liberal), fill = "royalblue") + 
-  scale_y_continuous(labels = scales::percent) +
+  geom_col(aes(y = 1), fill = "royalblue") + 
+  geom_col(aes(y = percent_con), fill = "red3") + 
+  scale_y_continuous(labels = scales::percent) + 
   labs(title = "Supreme Court Voting Directions Based on Court Era", x = "Court Era", y = "Percentage", subtitle = "Blue = Voting Rights Expanded, Red = Voting Rights Restricted")
 ```
 
 This bar chart shows how the Supreme Court expanded or restricted voting rights in each court era since the passing of the Civil Rights Act of 1965. Red sections in each bar show the percentage of cases that restricted voting rights in each era, while blue sections show the percentage of cases that expanded voting rights. From this we can see that the Warren and Burger courts restricted voting rights more, while the Rehnquist and Roberts courts do not have a large difference in the expansion or restriction decisions. This graph does not take into account how many cases dealt with voting in each era, so we cannot yet assume that voting rights were restricted more than they were expanded. 
+
+```{r}
+plot_data <- cases |>
+  filter(!is.na(ideologyBinary)) |>
+  mutate(ideology_label = factor(ideologyBinary, levels = c(0, 1), 
+                                 labels = c("Liberal", "Conservative")))
+plot_data |> ggplot(aes(x = ideology_label, fill = ideology_label)) + 
+  geom_bar() + theme_minimal() +
+  labs(title = "Decision Direction Count Based on Court Rule", 
+       x = "Ideology", y = "Count of Cases") +
+  facet_wrap(~chief, ncol = 2) + 
+  scale_fill_manual(values = c("Conservative" = "red3", "Liberal" = "royalblue")) + 
+  theme(legend.position = "none",
+    strip.text = element_text(size = 12, face = "bold"))
+```
+
+Overall, the Warren and Burger courts have expanded voting rights more than they restricted them, since their decisions trend in a Liberal direction. The Rehnquist and Roberts courts voted to restrict voting rights, overall, but their Conservative decisions aren't much higher than their Liberal ones. From this we can conclude that the Supreme Court has expanded voting rights, as they've made more Liberal decisions than Conservative ones since the passage of the Voting Rights Act of 1965. 
+
+## Regression Analysis
+
+```{r analysis}
+cases$issue <- factor(cases$issue)
+fit <- lm(ideologyBinary ~ issue + chief, data = cases)
+cleaned_fit <- tidy(fit)
+cleaned_fit |> knitr::kable(digits = 3)
+```
+
+### Results 
+
+The `issue` column in the cases dataset contains three unique variables. Issue 20010 is related to any case that falls under voting. Issue 20020 deals specifically with the Voting Rights Act of 1965 and any proposed amendments to it. Issue 20090 deals with reapportionment. 
+
+The model predicts that for cases regarding 20010 during the Warren court have a 0.173 probability of having a Liberal ruling. Holding the era constant, we can see that cases regarding issue 20020 are 14.9 percentage points less likely to have a Liberal ruling than issue 20010, and cases regarding issue 20090 are 8.4 percentage points more likely to hold a Liberal ruling. Compared to the Warren court, the Burger court is 29.3 percentage points more likely, the Rehnquist court is 36.8 percentage points more likely, and the Roberts court is 36.0 percentage points more likely to make a Liberal ruling on a case. From this analysis, we can see that Chief Justice is a stronger predictor of which direction a case decision will go in than issue type is. 
+
+While the data visualization shows that more recent courts have made slightly more Conservative decisions, when we control for legal issues using a regression model, we find a positive shift in the probability of Liberal rulings during the Rehnquist and Roberts eras compared to the Warren era. This shows that the Supreme Court has overall expanded voting rights, even across different challenges and ideas regarding the Voting Rights Act. 
+
