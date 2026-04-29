@@ -19,6 +19,8 @@ The Voting Rights Act of 1965 was signed into law by President Lyndon B. Johnson
 
 **Has the U.S. Supreme Court expanded or limited access to voting since the passing of the Voting Rights Act of 1965?**
 
+
+
 ## Data
 
 The data used for this analysis comes from the Supreme Court Database from Washington University Law School in St. Louis, which contains over 200 pieces of information from each case the court has heard between the 1791 and 2024 terms. In this case, this data specifically comes from the MODERN database, which includes information from the years 1945 to 2024. 
@@ -27,7 +29,11 @@ Our analysis is a cross-sectional study, since this was an observational study t
 
 When answering this question, the null hypothesis will be that the Supreme Court has restricted voting rights since 1965, since the judges tend to be more conservative than liberal. The alternative hypothesis will be that the Supreme Court has expanded voting rights. If the courts decisions trend conservatively, the hypothesis will be supported. If the court trends liberally or the decision was unspecifiable, the hypothesis will not be supported. 
 
-## Data Cleaning 
+
+
+## Data 
+
+Here we show the first several rows of our cleaned dataset. 
 
 ```{r loan and clean data, include=FALSE}
 cases <- read_csv("SCDB_2025_01_caseCentered_Vote.csv")
@@ -51,6 +57,8 @@ head(cases) |> select(year, dateDecision, caseName, chief, decisionDirection, id
   knitr::kable()
 ```
 
+
+
 ## Data Visualization
 
 ```{r visualization, echo=FALSE}
@@ -70,7 +78,13 @@ plot_data |> ggplot(aes(x = ideology_label, fill = ideology_label)) +
 
 Each bar graph represents a different court era since 1965, and compares the number of Conservative and Liberal decisions made in cases about voting for each era. This shows that, overall, the Warren and Burger courts have expanded voting rights more than they restricted them, since their decisions trend in a Liberal direction. The Rehnquist and Roberts courts, overall, voted to restrict voting rights more than expand them, overall, but their Conservative decisions aren't much higher than their Liberal ones. This shows that the Supreme Court has expanded voting rights, as they've made more Liberal decisions than Conservative ones since the passage of the Voting Rights Act of 1965. 
 
+
+
 ## Regression Analysis
+
+This regression analysis predicts the direction of a case's decision based off of two variables, the specific issue of a case and the era of the court the case took place in. The `issue` column in the cases dataset contains three unique variables. Issue 20010 is related to any case that falls under voting. Issue 20020 deals specifically with the Voting Rights Act of 1965 and any proposed amendments to it. Issue 20090 deals with reapportionment. 
+
+### Regression Results 
 
 ```{r analysis, echo=FALSE}
 cases$issue <- factor(cases$issue)
@@ -79,18 +93,17 @@ cleaned_fit <- tidy(fit)
 cleaned_fit |> knitr::kable(digits = 3)
 ```
 
-### Regression Results 
-
-The `issue` column in the cases dataset contains three unique variables. Issue 20010 is related to any case that falls under voting. Issue 20020 deals specifically with the Voting Rights Act of 1965 and any proposed amendments to it. Issue 20090 deals with reapportionment. 
-
 The model predicts that for cases regarding 20010 during the Warren court have a 0.173 probability of having a Liberal ruling. Holding the era constant, we can see that cases regarding issue 20020 are 14.9 percentage points less likely to have a Liberal ruling than issue 20010, and cases regarding issue 20090 are 8.4 percentage points more likely to hold a Liberal ruling. Compared to the Warren court, the Burger court is 29.3 percentage points more likely, the Rehnquist court is 36.8 percentage points more likely, and the Roberts court is 36.0 percentage points more likely to make a Liberal ruling on a case. 
 
-For the purpose of this analysis, $\alpha = 0.05$. Issue is not a strong predictor of which direction a case will go, because the p-values, which are 0.139 and 0.396, respectively, are not statistically significant, as they are all about 0.05. This means that issue type does not have a strong effect on the ruling direction of a case. The court eras show a different result. The Burger court has a p-value of 0.015, the Rehnquist court has a p-value of 0.003, and the Roberts court has a p-value of 0.008, all of which are less than 0.05, making them statistically significant. Since they are statistically significant, court era does have a strong effect on the probability of a Liberal ruling. 
-From this analysis, we can see that Chief Justice is a stronger predictor of which direction a case decision will go in than issue type is. 
+For the purpose of this analysis, $\alpha = 0.05$. Issue is not a strong predictor of which direction a case will go, because the p-values, which are 0.139 and 0.396, respectively, are not statistically significant, as they are all about 0.05. This means that issue type does not have a strong effect on the ruling direction of a case. The court eras show a different result. The Burger court has a p-value of 0.015, the Rehnquist court has a p-value of 0.003, and the Roberts court has a p-value of 0.008, all of which are less than 0.05, making them statistically significant. Since they are statistically significant, court era does have a strong effect on the probability of a Liberal ruling. From the analysis, we can see that Chief Justice is a stronger predictor of which direction a case decision will go in than issue type is. 
 
 While the data visualization shows that more recent courts have made slightly more Conservative decisions, when we control for legal issues using a regression model, we find a positive shift in the probability of Liberal rulings during the Rehnquist and Roberts eras compared to the Warren era. This shows that the Supreme Court has overall expanded voting rights, even across different challenges and ideas regarding the Voting Rights Act. 
 
 ## Conclusion
+
+Both the data visualization and regression analysis show that since 1965, the Supreme Court has done more to expand voting rights than restrict them, which goes against what we predicted in the null hypothesis. One limitation of this analysis is that it measures how only the Supreme Court has acted on voting rights, not state courts or lower courts, which is selection bias. Since the Supreme Court tends to hear the most unusual or extreme cases, other courts may have, as a whole, not expanded voting rights. This trend might be specific to only the Supreme Court. Potential confounding variables might be the Voting Rights Act itself, which was changed in 1970, 1975, 1982, and 2006. This means that a Liberal ruling in 1966 is based off a different law than a ruling 2024. This means that eras are correlated with different versions of the law, so we may just be seeing the Supreme Court reacting to Congress' new decision, not their own judicial preferences. 
+
+With more time, a more comprehensive analysis of all court cases related to voting could be made, that analyzes whether or not voting rights were expanded or restricted more across all states in the U.S. 
 
 ### Code
 
