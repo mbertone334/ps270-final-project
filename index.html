@@ -1545,14 +1545,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-article">
 <h2 id="introduction">Introduction</h2>
-<p>The Voting Rights Act of 1965 was signed into law by President Lyndon B. Johnson, with the aim of providing direct federal intervention for African Americans to be able to vote, as well as banned tactics that had long been used to keep them from voting. This was a huge expansion of voting rights for Americans, as it aimed at stopping voter suppression that had taken place since the U.S. had been founded. Since 1969, 14 of the 18 justices appointed have been selected by Republican presidents, making them likely to follow the opinions of their appointees, some of which may include limiting access to voting. Currently, the Supreme Court has a 6-3 divide, with the majority leaning conservative.</p>
-<p><strong>Has the U.S. Supreme Court expanded or limited access to voting since the passing of the Voting Rights Act of 1965?</strong></p>
+<p>The Voting Rights Act of 1965 was signed into law by President Lyndon B. Johnson, with the aim of providing direct federal intervention for African Americans to be able to vote, as well as banned tactics that had long been used to keep them from voting. This was a huge expansion of voting rights for Americans, as it aimed at stopping voter suppression that had taken place since the U.S. had been founded. Since 1969, 14 of the 18 justices appointed have been selected by Republican presidents, making them likely to follow the opinions of their appointees, some of which may include limiting access to voting. Currently, the Supreme Court has a 6-3 divide, with the majority leaning conservative. Since the Supreme Court is the most influential court in the United States and it’s decisions affect everyone who lives there, it’s important to know how their actions have influenced laws and practices. Voting is one of the most fundamental rights of a Democracy, and it’s important to know how Americans voting rights are being affected as a whole. We’re asking the question, <strong>has the U.S. Supreme Court expanded or limited access to voting since the passing of the Voting Rights Act of 1965?</strong></p>
 <h2 id="data">Data</h2>
 <p>The data used for this analysis comes from the Supreme Court Database from Washington University Law School in St. Louis, which contains over 200 pieces of information from each case the court has heard between the 1791 and 2024 terms. In this case, this data specifically comes from the MODERN database, which includes information from the years 1945 to 2024.</p>
-<p>Our analysis is a cross-sectional study, since this was an observational study that involved looking at data from a population, which in this case is U.S. Supreme Court cases, over a specific period of time. The explanatory variable is the court era, in which each era is decided by the judge that is the Chief Justice. Since 1965, the court eras have included the Warren court, the Burger court, the Rehnquist court, and the Roberts court, which is the era the Supreme Court is currently in. From this, the outcome variable is the outcome of the case, on which we will base whether or not voting access was expanded or restricted. This will be measured by the <code>decisionDirection</code> variable, which notes whether the court voted conservatively, liberally, or their decision was unspecifiable.</p>
-<p>When answering this question, the null hypothesis will be that the Supreme Court has restricted voting rights since 1965, since the judges tend to be more conservative than liberal. The alternative hypothesis will be that the Supreme Court has expanded voting rights. If the courts decisions trend conservatively, the hypothesis will be supported. If the court trends liberally or the decision was unspecifiable, the hypothesis will not be supported.</p>
-<h2 id="data-1">Data</h2>
-<p>Here we show the first several rows of our cleaned dataset.</p>
+<p>Our analysis is a longitudinal study, because we are looking at data from Supreme Court cases regarding voting across a long period of time. The explanatory variable is the court era, in which each era is decided by the judge that is the Chief Justice. Since 1965, the court eras have included the Warren court, the Burger court, the Rehnquist court, and the Roberts court, which is the era the Supreme Court is currently in. From this, the outcome variable is the outcome of the case, on which we will base whether or not voting access was expanded or restricted. This will be measured by the <code>decisionDirection</code> variable, which notes whether the court voted conservatively, liberally, or their decision was unspecifiable.</p>
+<p>When answering this question, the null hypothesis is that the probability of a Liberal ruling has remained constant across all court eras. The alternative hypothesis is that the probability of a Liberal ruling has changed depending on which era the court is in. If the Liberal rulings remain constant across the court eras we’re observing, we’ll fail to reject the null hypothesis. Otherwise, we may reject the null hypothesis and accept the alternative.</p>
+<p>Here are the first several rows of our cleaned dataset.</p>
 <div class="layout-chunk" data-layout="l-body">
 <table>
 <colgroup>
@@ -1631,7 +1629,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p>Each bar graph represents a different court era since 1965, and compares the number of Conservative and Liberal decisions made in cases about voting for each era. This shows that, overall, the Warren and Burger courts have expanded voting rights more than they restricted them, since their decisions trend in a Liberal direction. The Rehnquist and Roberts courts, overall, voted to restrict voting rights more than expand them, overall, but their Conservative decisions aren’t much higher than their Liberal ones. This shows that the Supreme Court has expanded voting rights, as they’ve made more Liberal decisions than Conservative ones since the passage of the Voting Rights Act of 1965.</p>
 <h2 id="regression-analysis">Regression Analysis</h2>
-<p>This regression analysis predicts the direction of a case’s decision based off of two variables, the specific issue of a case and the era of the court the case took place in. The <code>issue</code> column in the cases dataset contains three unique variables. Issue 20010 is related to any case that falls under voting. Issue 20020 deals specifically with the Voting Rights Act of 1965 and any proposed amendments to it. Issue 20090 deals with reapportionment.</p>
+<p>This regression analysis predicts the direction of a case’s decision based on two variables, the specific issue of a case and the era of the court the case took place in. The <code>issue</code> column in the cases dataset contains three unique variables. Issue 20010 related to any case that falls under voting. Issue 20020 deals specifically with the Voting Rights Act of 1965 and any proposed amendments to it. Issue 20090 deals with reapportionment.</p>
 <h3 id="regression-results">Regression Results</h3>
 <div class="layout-chunk" data-layout="l-body">
 <table>
@@ -1690,12 +1688,99 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tbody>
 </table>
 </div>
-<p>The model predicts that for cases regarding 20010 during the Warren court have a 0.173 probability of having a Liberal ruling. Holding the era constant, we can see that cases regarding issue 20020 are 14.9 percentage points less likely to have a Liberal ruling than issue 20010, and cases regarding issue 20090 are 8.4 percentage points more likely to hold a Liberal ruling. Compared to the Warren court, the Burger court is 29.3 percentage points more likely, the Rehnquist court is 36.8 percentage points more likely, and the Roberts court is 36.0 percentage points more likely to make a Liberal ruling on a case.</p>
-<p>For the purpose of this analysis, <span class="math inline">\(\alpha = 0.05\)</span>. Issue is not a strong predictor of which direction a case will go, because the p-values, which are 0.139 and 0.396, respectively, are not statistically significant, as they are all about 0.05. This means that issue type does not have a strong effect on the ruling direction of a case. The court eras show a different result. The Burger court has a p-value of 0.015, the Rehnquist court has a p-value of 0.003, and the Roberts court has a p-value of 0.008, all of which are less than 0.05, making them statistically significant. Since they are statistically significant, court era does have a strong effect on the probability of a Liberal ruling. From the analysis, we can see that Chief Justice is a stronger predictor of which direction a case decision will go in than issue type is.</p>
-<p>While the data visualization shows that more recent courts have made slightly more Conservative decisions, when we control for legal issues using a regression model, we find a positive shift in the probability of Liberal rulings during the Rehnquist and Roberts eras compared to the Warren era. This shows that the Supreme Court has overall expanded voting rights, even across different challenges and ideas regarding the Voting Rights Act.</p>
+<p>Since issue 20010 is classified as “General Voting”, it is a good baseline to compare our other variables against. The model predicts that for cases regarding 20010 during the Warren court have a 0.173 probability of having a Liberal ruling. While the baseline probability for the Warren era may seem low (17.3%), the significant positive coefficients for the following court eras indicated an increase in Liberal decisions compared to the baseline. Holding the era constant, we can see that cases regarding issue 20020 are 14.9 percentage points less likely to have a Liberal ruling than issue 20010, and cases regarding issue 20090 are 8.4 percentage points more likely to hold a Liberal ruling. Compared to the Warren court, the Burger court is 29.3 percentage points more likely, the Rehnquist court is 36.8 percentage points more likely, and the Roberts court is 36.0 percentage points more likely to make a Liberal ruling on a case.</p>
+<p>For the purpose of this analysis, <span class="math inline">\(\alpha = 0.05\)</span>. Issue is not a strong predictor of which direction a case will go, because the p-values, which are 0.139 and 0.396, respectively, are not statistically significant, as they are all above 0.05. This means that issue type is not associated with a strong change in the probability of a Liberal ruling. The court eras show a different result. The Burger court has a p-value of 0.015, the Rehnquist court has a p-value of 0.003, and the Roberts court has a p-value of 0.008, all of which are less than 0.05, making them statistically significant. From the analysis, we can see that Chief Justice is a stronger predictor of which direction a case decision will go in than issue type is.</p>
+<p>While the data visualization shows that more recent courts have made slightly more Conservative decisions, in the first regression model when we control for legal issues using a regression model, we find a positive shift in the probability of Liberal rulings during the Rehnquist and Roberts eras compared to the Warren era. This means that we can reject the null hypothesis, since the era of the court does affect the probability of a Liberal ruling.</p>
+<p>One issue with this analysis is that the Supreme Court handpicks the cases they hear, often choosing the cases that are the most extreme or controversial. This creates selection bias, as the justices are not hearing every case that deals with the restriction or expansion of voting rights. The <code>lawType</code> column of the data set records the legal provisions considered by the court when hearing the case, and measures them based on whether they were challenges to the Constitution, court rules, state laws, federal statutes, infrequently litigated statutes, cases with no legal provision, or <code>other</code> for cases that don’t apply to any of these classifications. This analysis will predict the direction of a case’s decision, using issue type and the interaction between the court era and the law type.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.898</td>
+<td style="text-align: right;">0.412</td>
+<td style="text-align: right;">4.607</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">issue20020</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">0.119</td>
+<td style="text-align: right;">0.784</td>
+<td style="text-align: right;">0.434</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">issue20090</td>
+<td style="text-align: right;">-0.102</td>
+<td style="text-align: right;">0.107</td>
+<td style="text-align: right;">-0.961</td>
+<td style="text-align: right;">0.338</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chiefBurger</td>
+<td style="text-align: right;">-0.578</td>
+<td style="text-align: right;">0.466</td>
+<td style="text-align: right;">-1.241</td>
+<td style="text-align: right;">0.216</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chiefRehnquist</td>
+<td style="text-align: right;">-0.529</td>
+<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">-1.216</td>
+<td style="text-align: right;">0.226</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chiefRoberts</td>
+<td style="text-align: right;">-0.213</td>
+<td style="text-align: right;">0.446</td>
+<td style="text-align: right;">-0.478</td>
+<td style="text-align: right;">0.633</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lawType</td>
+<td style="text-align: right;">-0.047</td>
+<td style="text-align: right;">0.184</td>
+<td style="text-align: right;">-0.257</td>
+<td style="text-align: right;">0.797</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chiefBurger:lawType</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">0.206</td>
+<td style="text-align: right;">0.747</td>
+<td style="text-align: right;">0.456</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chiefRehnquist:lawType</td>
+<td style="text-align: right;">0.095</td>
+<td style="text-align: right;">0.190</td>
+<td style="text-align: right;">0.499</td>
+<td style="text-align: right;">0.618</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chiefRoberts:lawType</td>
+<td style="text-align: right;">-0.013</td>
+<td style="text-align: right;">0.192</td>
+<td style="text-align: right;">-0.069</td>
+<td style="text-align: right;">0.945</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The model shows that for all 3 interaction terms, the p-values are 0.456, 0.618, and 0.945, respectively, which is larger than the chosen parameter of 0.05, meaning they are not statistically significant. This means that the court is not “Liberal” on easier statutory cases and “Conservative” on Constitutional ones, but instead that it’s behavior appears consistent regardless of the <code>lawType</code>. This suggests that slight ideological shifts in different court eras are because of judicial philosophy, not simply the court picking more “extreme” cases.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Both the data visualization and regression analysis show that since 1965, the Supreme Court has done more to expand voting rights than restrict them, which goes against what we predicted in the null hypothesis. One limitation of this analysis is that it measures how only the Supreme Court has acted on voting rights, not state courts or lower courts, which is selection bias. Since the Supreme Court tends to hear the most unusual or extreme cases, other courts may have, as a whole, not expanded voting rights. This trend might be specific to only the Supreme Court. Potential confounding variables might be the Voting Rights Act itself, which was changed in 1970, 1975, 1982, and 2006. This means that a Liberal ruling in 1966 is based off a different law than a ruling 2024. This means that eras are correlated with different versions of the law, so we may just be seeing the Supreme Court reacting to Congress’ new decision, not their own judicial preferences.</p>
-<p>With more time, a more comprehensive analysis of all court cases related to voting could be made, that analyzes whether or not voting rights were expanded or restricted more across all states in the U.S.</p>
+<p>Both the data visualization and regression analyses show that since 1965, the Supreme Court has done more to expand voting rights than restrict them, and that the era of the court does affect the probability of a Liberal decision for cases regarding voting. One limitation of this analysis is that it only measures the probability of a Liberal ruling based on court era for the Supreme Court, not state or lower courts. Other courts may not have the probability of a Liberal ruling change based on changes in judges or court eras, so this trend may be specific to the Supreme Court. Potential confounding variables might be the Voting Rights Act itself, which was changed in 1970, 1975, 1982, and 2006. This means that a Liberal ruling in 1966 is based off a different law than a ruling 2024. This means that eras are correlated with different versions of the law, so we may just be seeing the Supreme Court reacting to Congress’ new decision, not their own judicial preferences. While we can’t control for every law change, the regression model including the interaction of <code>lawType</code> with court era was a way to make sure that the “type” of law wasn’t the only thing driving their decisions.</p>
+<p>With more time, a more comprehensive analysis of all court cases related to voting could be made, that analyzes whether or not the probability of a Liberal decision changes greatly over time.</p>
 <h3 id="code">Code</h3>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1733,7 +1818,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span><span class='va'>cases</span><span class='op'>$</span><span class='va'>issue</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>cases</span><span class='op'>$</span><span class='va'>issue</span><span class='op'>)</span></span>
 <span><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>ideologyBinary</span> <span class='op'>~</span> <span class='va'>issue</span> <span class='op'>+</span> <span class='va'>chief</span>, data <span class='op'>=</span> <span class='va'>cases</span><span class='op'>)</span></span>
 <span><span class='va'>cleaned_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span></span>
-<span><span class='va'>cleaned_fit</span> <span class='op'>|&gt;</span> <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span>digits <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span></code></pre>
+<span><span class='va'>cleaned_fit</span> <span class='op'>|&gt;</span> <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span>digits <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span><span class='va'>fit_interaction</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>decisionDirection</span> <span class='op'>~</span> <span class='va'>issue</span> <span class='op'>+</span> <span class='va'>chief</span> <span class='op'>*</span> <span class='va'>lawType</span>, data <span class='op'>=</span> <span class='va'>cases</span><span class='op'>)</span></span>
+<span><span class='va'>cleaned_interaction</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></span><span class='op'>(</span><span class='va'>fit_interaction</span><span class='op'>)</span></span>
+<span><span class='va'>cleaned_interaction</span> <span class='op'>|&gt;</span> <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span>digits <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
